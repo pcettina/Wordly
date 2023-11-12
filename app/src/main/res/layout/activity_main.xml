@@ -5,11 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
+    <!-- https://chat.openai.com/share/d3116b7e-75ff-4901-b2da-4367f289aea4 -->
     <LinearLayout
         android:id="@+id/input_linlay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
         <EditText
             android:id="@+id/editTextStart"
             android:layout_width="wrap_content"
@@ -22,7 +25,7 @@
             android:id="@+id/editTextEnd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_="@id/editTextStart"
+
             android:hint="Enter end word"
             android:inputType="text" />
 
@@ -46,5 +49,13 @@
         android:layout_marginTop="16dp"
 
         />
+
+    <LinearLayout
+        android:id="@+id/wordContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/textViewResult"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:orientation="horizontal"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

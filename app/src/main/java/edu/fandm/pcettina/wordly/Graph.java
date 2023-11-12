@@ -1,26 +1,37 @@
 package edu.fandm.pcettina.wordly;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.util.Log;
+
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Graph { //https://chat.openai.com/share/b21d698f-3e1f-404d-94d2-52c77dc69b99
+public class Graph {
     private Map<String, List<String>> graph;
 
-    public Graph(String filePath) {
+    public Graph(Context context, String fileName) {
         this.graph = new HashMap<>();
-        buildGraph(filePath);
+        buildGraph(context, fileName);
     }
 
-    private void buildGraph(String filePath) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+    private void buildGraph(Context context, String fileName) {
+        AssetManager assetManager = context.getAssets();
+
+        try (InputStream inputStream = assetManager.open(fileName);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+
             String line;
             while ((line = reader.readLine()) != null) {
                 String word = line.trim().toLowerCase();
+                Log.println(Log.WARN, "MSG", "word: " + word);
+
                 if (isValidWord(word)) {
                     addWordToGraph(word);
                 }
@@ -69,18 +80,6 @@ public class Graph { //https://chat.openai.com/share/b21d698f-3e1f-404d-94d2-52c
     public Map<String, List<String>> getGraph() {
         return graph;
     }
-
-    public static void main(String[] args) {
-        String filePath = "path/to/your/dictionary.txt"; // Replace with the actual path
-        Graph wordGraph = new Graph(filePath);
-
-        // Access the graph
-        Map<String, List<String>> graph = wordGraph.getGraph();
-
-        // Print the graph (for demonstration purposes)
-        for (Map.Entry<String, List<String>> entry : graph.entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-        }
-    }
 }
+
 

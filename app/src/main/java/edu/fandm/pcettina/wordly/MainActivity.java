@@ -1,9 +1,11 @@
 package edu.fandm.pcettina.wordly;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +20,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity { //https://chat.openai.com/share/d3116b7e-75ff-4901-b2da-4367f289aea4
 
     private Graph wordGraph;
 
@@ -28,11 +30,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Replace this with the actual path to your dictionary file
-        String filePath = "path/to/your/dictionary.txt";
-        wordGraph = new Graph(filePath);
+
+        wordGraph = new Graph(this, "words_test.txt");
 
         final EditText startWordEditText = findViewById(R.id.editTextStart);
         final EditText endWordEditText = findViewById(R.id.editTextEnd);
+        final LinearLayout wordContainer = findViewById(R.id.wordContainer);
         final TextView resultTextView = findViewById(R.id.textViewResult);
 
         Button findPathButton = findViewById(R.id.buttonFindPath);
@@ -44,23 +47,55 @@ public class MainActivity extends AppCompatActivity {
 
                 List<String> path = findPath(wordGraph.getGraph(), startWord, endWord);
 
-                if (path != null) {
-                    StringBuilder pathString = new StringBuilder("Valid Path: ");
-                    for (String word : path) {
-                        pathString.append(word).append(" -> ");
-                    }
-                    pathString.delete(pathString.length() - 4, pathString.length());
-                    resultTextView.setText(pathString.toString());
-                } else {
-                    resultTextView.setText("No valid path found between the two words.");
+                if (path != null && !path.get(0).equals("wrong")) {
+                    createWordGuessUI(wordContainer, path);
+                    resultTextView.setText("Try to guess the words in the path!");
+//                    StringBuilder pathString = new StringBuilder("Valid Path: ");
+//                    for (String word : path) {
+//                        pathString.append(word).append(" -> ");
+//                    }
+//                    pathString.delete(pathString.length() - 4, pathString.length());
+//                    resultTextView.setText(pathString.toString());
+                }
+                else if(path.get(0).equals("wrong")){
+                    resultTextView.setText("Words not in graph.");
+                }
+                else {
+                    resultTextView.setText("No valid path exists.");
                 }
             }
         });
     }
 
+    private void createWordGuessUI(LinearLayout wordContainer, List<String> path) {
+        wordContainer.removeAllViews(); // Clear existing UI components
+
+        for (int i = 0; i < path.size(); i++) {
+            String word = path.get(i);
+
+            // Create a TextView for each word
+            TextView wordTextView = new TextView(this);
+            wordTextView.setText("?");
+            wordTextView.setTextSize(18);
+            wordTextView.setGravity(Gravity.CENTER);
+
+            // Create an EditText for user input
+            EditText guessEditText = new EditText(this);
+            guessEditText.setHint("Enter word");
+            guessEditText.setTag(word); // Tag each EditText with the corresponding word
+            guessEditText.setTextSize(14);
+            guessEditText.setGravity(Gravity.CENTER);
+
+            // Add views to the container
+            wordContainer.addView(wordTextView);
+            wordContainer.addView(guessEditText);
+        }
+    }
+
     private List<String> findPath(Map<String, List<String>> graph, String startWord, String endWord) {
         if (!graph.containsKey(startWord) || !graph.containsKey(endWord)) {
-            return null; // Either start or end word is not in the graph
+            List<String> list = Collections.singletonList("wrong");
+            return list;// Either start or end word is not in the graph
         }
 
         Queue<String> queue = new LinkedList<>();
