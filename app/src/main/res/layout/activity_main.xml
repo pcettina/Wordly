@@ -5,5 +5,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+    <LinearLayout
+        android:id="@+id/input_linlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/editTextStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Enter start word"
+            android:inputType="text"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <EditText
+            android:id="@+id/editTextEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_="@id/editTextStart"
+            android:hint="Enter end word"
+            android:inputType="text" />
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/buttonFindPath"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/input_linlay"
+        android:layout_marginTop="16dp"
+        android:text="Find Path" />
+
+    <TextView
+        android:id="@+id/textViewResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/buttonFindPath"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="16dp"
+
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
