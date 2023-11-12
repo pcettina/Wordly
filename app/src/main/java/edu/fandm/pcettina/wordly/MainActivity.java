@@ -1,14 +1,18 @@
 package edu.fandm.pcettina.wordly;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +27,8 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity { //https://chat.openai.com/share/d3116b7e-75ff-4901-b2da-4367f289aea4
 
     private Graph wordGraph;
+    private List<String> path;
+    private List<EditText> guessEditTexts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,8 @@ public class MainActivity extends AppCompatActivity { //https://chat.openai.com/
         final LinearLayout wordContainer = findViewById(R.id.wordContainer);
         final TextView resultTextView = findViewById(R.id.textViewResult);
 
+        guessEditTexts = new ArrayList<>();
+
         Button findPathButton = findViewById(R.id.buttonFindPath);
         findPathButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,17 +53,17 @@ public class MainActivity extends AppCompatActivity { //https://chat.openai.com/
                 String startWord = startWordEditText.getText().toString().trim().toLowerCase();
                 String endWord = endWordEditText.getText().toString().trim().toLowerCase();
 
-                List<String> path = findPath(wordGraph.getGraph(), startWord, endWord);
+                path = findPath(wordGraph.getGraph(), startWord, endWord);
 
                 if (path != null && !path.get(0).equals("wrong")) {
                     createWordGuessUI(wordContainer, path);
                     resultTextView.setText("Try to guess the words in the path!");
-//                    StringBuilder pathString = new StringBuilder("Valid Path: ");
-//                    for (String word : path) {
-//                        pathString.append(word).append(" -> ");
-//                    }
-//                    pathString.delete(pathString.length() - 4, pathString.length());
-//                    resultTextView.setText(pathString.toString());
+                    StringBuilder pathString = new StringBuilder("Valid Path: ");
+                    for (String word : path) {
+                        pathString.append(word).append(" -> ");
+                    }
+                    pathString.delete(pathString.length() - 4, pathString.length());
+                    resultTextView.setText(pathString.toString());
                 }
                 else if(path.get(0).equals("wrong")){
                     resultTextView.setText("Words not in graph.");
@@ -65,11 +73,19 @@ public class MainActivity extends AppCompatActivity { //https://chat.openai.com/
                 }
             }
         });
+
+        Button checkResponse = (Button) findViewById(R.id.buttonSubmit);
+        checkResponse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkUserGuess();
+            }
+        });
     }
 
     private void createWordGuessUI(LinearLayout wordContainer, List<String> path) {
         wordContainer.removeAllViews(); // Clear existing UI components
-
+        guessEditTexts.clear();
         for (int i = 0; i < path.size(); i++) {
             String word = path.get(i);
 
@@ -86,10 +102,52 @@ public class MainActivity extends AppCompatActivity { //https://chat.openai.com/
             guessEditText.setTextSize(14);
             guessEditText.setGravity(Gravity.CENTER);
 
+            guessEditTexts.add(guessEditText);
+
             // Add views to the container
             wordContainer.addView(wordTextView);
             wordContainer.addView(guessEditText);
         }
+    }
+    private void checkUserGuess() {
+        if (path == null) {
+            return; // No valid path, nothing to check
+        }
+
+        List<String> userGuesses = new ArrayList<>();
+        for (EditText editText : guessEditTexts) {
+            String userGuess = editText.getText().toString().trim().toLowerCase();
+            userGuesses.add(userGuess);
+        }
+
+        if (userGuesses.equals(path)) {
+            // User guessed the correct path
+            showCongratulationsAnimation();
+        } else {
+            final TextView resultTextView = findViewById(R.id.textViewResult);
+            resultTextView.setText("Incorrect. Try again");
+        }
+    }
+
+    private void showCongratulationsAnimation() {
+        final TextView resultTextView = findViewById(R.id.textViewResult);
+        resultTextView.setText("Congratulations!");
+
+        AlphaAnimation blinkAnimation = new AlphaAnimation(0.0f, 1.0f);
+        blinkAnimation.setDuration(500);
+        blinkAnimation.setRepeatMode(AlphaAnimation.REVERSE);
+        blinkAnimation.setRepeatCount(5);
+
+        resultTextView.startAnimation(blinkAnimation);
+
+        // Reset the animation and text after it finishes
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                resultTextView.clearAnimation();
+                resultTextView.setText("");
+            }
+        }, 5000); // Adjust the duration as needed
     }
 
     private List<String> findPath(Map<String, List<String>> graph, String startWord, String endWord) {

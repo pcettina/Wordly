@@ -58,4 +58,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:orientation="horizontal"/>
 
+    <Button
+        android:id="@+id/buttonSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/wordContainer"
+        android:layout_marginTop="16dp"
+        android:text="Submit Guesses" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
