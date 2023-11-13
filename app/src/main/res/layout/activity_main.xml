@@ -4,66 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:id="@+id/root"
+    android:background="@color/cardview_dark_background">
 
-    <!-- https://chat.openai.com/share/d3116b7e-75ff-4901-b2da-4367f289aea4 -->
-    <LinearLayout
-        android:id="@+id/input_linlay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent">
-        <EditText
-            android:id="@+id/editTextStart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Enter start word"
-            android:inputType="text"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <EditText
-            android:id="@+id/editTextEnd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:hint="Enter end word"
-            android:inputType="text" />
-
-    </LinearLayout>
-
-
-    <Button
-        android:id="@+id/buttonFindPath"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/input_linlay"
-        android:layout_marginTop="16dp"
-        android:text="Find Path" />
-
-    <TextView
-        android:id="@+id/textViewResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/buttonFindPath"
+    <ImageView
+        android:layout_width="275dp"
+        android:layout_height="275dp"
+        android:background="@drawable/wordly"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        />
-
-    <LinearLayout
-        android:id="@+id/wordContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/textViewResult"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:orientation="horizontal"/>
-
-    <Button
-        android:id="@+id/buttonSubmit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/wordContainer"
-        android:layout_marginTop="16dp"
-        android:text="Submit Guesses" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
